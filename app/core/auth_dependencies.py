@@ -42,3 +42,21 @@ def get_usuario_logado(
         )
 
     return usuario
+
+
+def exigir_tipos_usuario(tipos_permitidos: list):
+    def verificar_permissao(usuario: Usuario = Depends(get_usuario_logado)):
+        if usuario.tipo not in tipos_permitidos:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "erro": True,
+                    "codigo": "PERMISSAO_NEGADA",
+                    "mensagem": "Você não possui permissão para acessar este recurso.",
+                    "detalhes": None
+                }
+            )
+
+        return usuario
+
+    return verificar_permissao

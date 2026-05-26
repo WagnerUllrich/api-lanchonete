@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
-from app.models.usuario import Usuario
+from app.models.usuario import Usuario, TipoUsuario
 from app.schemas.usuario_schema import UsuarioCreate, UsuarioResponse
 from app.core.security import gerar_hash_senha
-from app.core.auth_dependencies import get_usuario_logado
+from app.core.auth_dependencies import get_usuario_logado, exigir_tipos_usuario
 
 router = APIRouter(
     prefix="/usuarios",
@@ -50,3 +50,14 @@ def obter_meu_usuario(
     usuario_logado: Usuario = Depends(get_usuario_logado)
 ):
     return usuario_logado
+
+
+@router.get("/admin")
+def rota_admin(
+    usuario: Usuario = Depends(
+        exigir_tipos_usuario([TipoUsuario.ADMIN])
+    )
+):
+    return {
+        "mensagem": f"Bem-vindo admin {usuario.nome}"
+    }
