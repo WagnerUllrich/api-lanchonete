@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
 from app.models.usuario import Usuario
-from app.schemas.auth_schema import LoginRequest, TokenResponse
+from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.auth_schema import TokenResponse
 from app.core.security import verificar_senha, criar_token_acesso
 
 router = APIRouter(
@@ -13,9 +14,12 @@ router = APIRouter(
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(dados_login: LoginRequest, db: Session = Depends(get_db)):
+def login(
+    dados_login: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
 
-    usuario = db.query(Usuario).filter(Usuario.email == dados_login.email).first()
+    usuario = db.query(Usuario).filter(Usuario.email == dados_login.username).first()
 
     if not usuario:
         raise HTTPException(
@@ -28,7 +32,7 @@ def login(dados_login: LoginRequest, db: Session = Depends(get_db)):
             }
         )
 
-    if not verificar_senha(dados_login.senha, usuario.senha_hash):
+    if not verificar_senha(dados_login.password, usuario.senha_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={

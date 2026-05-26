@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from jose import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
 
 from app.core.config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRE_MINUTES
@@ -30,3 +30,17 @@ def criar_token_acesso(dados: dict) -> str:
     )
 
     return token
+
+
+def verificar_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            JWT_SECRET_KEY,
+            algorithms=[JWT_ALGORITHM]
+        )
+
+        return payload
+
+    except JWTError:
+        return None
