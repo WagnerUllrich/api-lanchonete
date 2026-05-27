@@ -3,10 +3,11 @@ from fastapi import FastAPI
 from app.db.database import Base, engine
 from app.models.usuario import Usuario
 from app.models.unidade import Unidade
+from app.models.produto import Produto
 from app.api.usuarios import router as usuarios_router
 from app.api.auth import router as auth_router
 from app.api.unidades import router as unidades_router
-
+from app.api.produtos import router as produtos_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -19,7 +20,7 @@ app = FastAPI(
 app.include_router(usuarios_router)
 app.include_router(auth_router)
 app.include_router(unidades_router)
-
+app.include_router(produtos_router)
 
 @app.get("/")
 def home():
