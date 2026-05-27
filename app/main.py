@@ -5,11 +5,14 @@ from app.models.usuario import Usuario
 from app.models.unidade import Unidade
 from app.models.produto import Produto
 from app.models.estoque import Estoque
+from app.models.pedido import Pedido
+from app.models.item_pedido import ItemPedido
 from app.api.usuarios import router as usuarios_router
 from app.api.auth import router as auth_router
 from app.api.unidades import router as unidades_router
 from app.api.produtos import router as produtos_router
 from app.api.estoques import router as estoques_router
+from app.api.pedidos import router as pedidos_router
 
 
 Base.metadata.create_all(bind=engine)
@@ -25,7 +28,7 @@ app.include_router(auth_router)
 app.include_router(unidades_router)
 app.include_router(produtos_router)
 app.include_router(estoques_router)
-
+app.include_router(pedidos_router)
 
 
 @app.get("/")
