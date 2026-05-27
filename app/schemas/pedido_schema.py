@@ -35,3 +35,7 @@ class PedidoResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class AtualizarStatusPedido(BaseModel):
+    status: StatusPedido

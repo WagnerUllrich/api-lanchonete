@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.auth_dependencies import get_usuario_logado
+from app.core.auth_dependencies import get_usuario_logado, exigir_tipos_usuario
 from app.db.dependencies import get_db
 from app.models.estoque import Estoque
 from app.models.item_pedido import ItemPedido
 from app.models.pedido import Pedido, StatusPedido
 from app.models.produto import Produto
-from app.models.usuario import Usuario
-from app.schemas.pedido_schema import PedidoCreate, PedidoResponse
+from app.models.usuario import Usuario, TipoUsuario
+from app.schemas.pedido_schema import PedidoCreate, PedidoResponse, AtualizarStatusPedido
 
 router = APIRouter(
     prefix="/pedidos",
@@ -98,6 +98,11 @@ def listar_pedidos(
     db: Session = Depends(get_db),
     usuario_logado: Usuario = Depends(get_usuario_logado)
 ):
+    if usuario_logado.tipo == TipoUsuario.CLIENTE:
+        return db.query(Pedido).filter(
+            Pedido.usuario_id == usuario_logado.id
+        ).all()
+
     return db.query(Pedido).all()
 
 
@@ -119,5 +124,73 @@ def buscar_pedido(
                 "detalhes": None
             }
         )
+
+    if (
+        usuario_logado.tipo == TipoUsuario.CLIENTE
+        and pedido.usuario_id != usuario_logado.id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "erro": True,
+                "codigo": "PERMISSAO_NEGADA",
+                "mensagem": "Você não possui permissão para acessar este pedido.",
+                "detalhes": None
+            }
+        )
+
+    return pedido
+
+@router.patch("/{pedido_id}/status", response_model=PedidoResponse)
+def atualizar_status_pedido(
+    pedido_id: int,
+    dados: AtualizarStatusPedido,
+    db: Session = Depends(get_db),
+    usuario_logado: Usuario = Depends(
+        exigir_tipos_usuario([
+            TipoUsuario.ADMIN,
+            TipoUsuario.FUNCIONARIO
+        ])
+    )
+):
+    pedido = db.query(Pedido).filter(Pedido.id == pedido_id).first()
+
+    if pedido is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "erro": True,
+                "codigo": "PEDIDO_NAO_ENCONTRADO",
+                "mensagem": "Pedido não encontrado.",
+                "detalhes": None
+            }
+        )
+
+    transicoes_permitidas = {
+        StatusPedido.CRIADO: [StatusPedido.EM_PREPARO, StatusPedido.CANCELADO],
+        StatusPedido.EM_PREPARO: [StatusPedido.PRONTO, StatusPedido.CANCELADO],
+        StatusPedido.PRONTO: [StatusPedido.ENTREGUE],
+        StatusPedido.ENTREGUE: [],
+        StatusPedido.CANCELADO: []
+    }
+
+    if dados.status not in transicoes_permitidas[pedido.status]:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "erro": True,
+                "codigo": "TRANSICAO_STATUS_INVALIDA",
+                "mensagem": "Transição de status do pedido não permitida.",
+                "detalhes": {
+                    "status_atual": pedido.status.value,
+                    "status_solicitado": dados.status.value
+                }
+            }
+        )
+
+    pedido.status = dados.status
+
+    db.commit()
+    db.refresh(pedido)
 
     return pedido
