@@ -91,3 +91,33 @@ def criar_pedido(
     db.refresh(novo_pedido)
 
     return novo_pedido
+
+
+@router.get("/", response_model=list[PedidoResponse])
+def listar_pedidos(
+    db: Session = Depends(get_db),
+    usuario_logado: Usuario = Depends(get_usuario_logado)
+):
+    return db.query(Pedido).all()
+
+
+@router.get("/{pedido_id}", response_model=PedidoResponse)
+def buscar_pedido(
+    pedido_id: int,
+    db: Session = Depends(get_db),
+    usuario_logado: Usuario = Depends(get_usuario_logado)
+):
+    pedido = db.query(Pedido).filter(Pedido.id == pedido_id).first()
+
+    if pedido is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "erro": True,
+                "codigo": "PEDIDO_NAO_ENCONTRADO",
+                "mensagem": "Pedido não encontrado.",
+                "detalhes": None
+            }
+        )
+
+    return pedido
