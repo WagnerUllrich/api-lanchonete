@@ -16,6 +16,7 @@ class StatusPagamento(enum.Enum):
     PENDENTE = "PENDENTE"
     APROVADO = "APROVADO"
     RECUSADO = "RECUSADO"
+    ERRO = "ERRO"
 
 
 class Pagamento(Base):

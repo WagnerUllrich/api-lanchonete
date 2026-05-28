@@ -34,15 +34,28 @@ def criar_pagamento(
             }
         )
 
+    status_pagamento = pagamento.resultado_mock
+
+    if status_pagamento == StatusPagamento.APROVADO:
+        mensagem_retorno = "Pagamento mock aprovado com sucesso."
+        pedido.status = StatusPedido.EM_PREPARO
+
+    elif status_pagamento == StatusPagamento.RECUSADO:
+        mensagem_retorno = "Pagamento mock recusado. O pedido permanece aguardando nova tentativa de pagamento."
+
+    elif status_pagamento == StatusPagamento.ERRO:
+        mensagem_retorno = "Erro simulado na integração com o serviço de pagamento. O pedido permanece aguardando nova tentativa."
+
+    else:
+        mensagem_retorno = "Resultado de pagamento mock não reconhecido."
+
     novo_pagamento = Pagamento(
         pedido_id=pedido.id,
         valor=pedido.valor_total,
         metodo=pagamento.metodo,
-        status=StatusPagamento.APROVADO,
-        mensagem_retorno="Pagamento mock aprovado com sucesso."
+        status=status_pagamento,
+        mensagem_retorno=mensagem_retorno
     )
-
-    pedido.status = StatusPedido.EM_PREPARO
 
     db.add(novo_pagamento)
     db.commit()

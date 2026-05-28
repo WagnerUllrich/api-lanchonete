@@ -6,6 +6,7 @@ from app.models.pagamento import MetodoPagamento, StatusPagamento
 class PagamentoCreate(BaseModel):
     pedido_id: int
     metodo: MetodoPagamento
+    resultado_mock: StatusPagamento = StatusPagamento.APROVADO
 
 
 class PagamentoResponse(BaseModel):
