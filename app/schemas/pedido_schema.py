@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 
+from datetime import datetime
+
 from app.models.pedido import CanalPedido, StatusPedido
 
 
@@ -33,6 +35,8 @@ class PedidoResponse(BaseModel):
     canal_pedido: CanalPedido = Field(alias="canalPedido")
     status: StatusPedido
     valor_total: float
+    criado_em: datetime
+    atualizado_em: datetime
 
     model_config = ConfigDict(
         from_attributes=True,

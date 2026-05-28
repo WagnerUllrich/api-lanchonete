@@ -1,4 +1,6 @@
 import enum
+from datetime import datetime
+from sqlalchemy import DateTime
 
 from sqlalchemy import Column, Integer, Float, Enum, ForeignKey
 
@@ -26,6 +28,14 @@ class Pedido(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
+    criado_em = Column(DateTime, default=datetime.utcnow)
+
+    atualizado_em = Column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
+
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
 
     unidade_id = Column(Integer, ForeignKey("unidades.id"), nullable=False)
@@ -39,3 +49,4 @@ class Pedido(Base):
     )
 
     valor_total = Column(Float, default=0)
+

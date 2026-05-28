@@ -10,6 +10,7 @@ from app.models.produto import Produto
 from app.models.usuario import Usuario, TipoUsuario
 from app.schemas.pedido_schema import PedidoCreate, PedidoResponse, AtualizarStatusPedido
 
+
 router = APIRouter(
     prefix="/pedidos",
     tags=["Pedidos"]
@@ -96,6 +97,7 @@ def criar_pedido(
 @router.get("/", response_model=list[PedidoResponse])
 def listar_pedidos(
     canal_pedido: CanalPedido | None = None,
+    status_pedido: StatusPedido | None = None,
     db: Session = Depends(get_db),
     usuario_logado: Usuario = Depends(get_usuario_logado)
 ):
@@ -109,6 +111,11 @@ def listar_pedidos(
     if canal_pedido:
         query = query.filter(
             Pedido.canal_pedido == canal_pedido
+        )
+
+    if status_pedido:
+        query = query.filter(
+            Pedido.status == status_pedido
         )
 
     return query.all()
