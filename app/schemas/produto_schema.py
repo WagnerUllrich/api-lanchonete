@@ -16,3 +16,10 @@ class ProdutoResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProdutoUpdate(BaseModel):
+    nome: str
+    descricao: str | None = None
+    preco: float
+    ativo: bool

@@ -14,3 +14,9 @@ class UnidadeResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UnidadeUpdate(BaseModel):
+    nome: str
+    endereco: str
+    ativo: bool
