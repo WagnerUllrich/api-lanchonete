@@ -10,6 +10,8 @@ from app.models.produto import Produto
 from app.models.usuario import Usuario, TipoUsuario
 from app.schemas.pedido_schema import PedidoCreate, PedidoResponse, AtualizarStatusPedido
 from app.utils.auditoria import registrar_log
+from app.models.movimento_estoque import MovimentoEstoque, TipoMovimentoEstoque
+
 
 router = APIRouter(
     prefix="/pedidos",
@@ -81,6 +83,16 @@ def criar_pedido(
         )
 
         estoque.quantidade -= item.quantidade
+
+        movimento_saida = MovimentoEstoque(
+            produto_id=produto.id,
+            unidade_id=pedido.unidade_id,
+            tipo=TipoMovimentoEstoque.SAIDA,
+            quantidade=item.quantidade,
+            motivo=f"Saída automática pelo pedido {novo_pedido.id}"
+        )
+
+        db.add(movimento_saida)
 
         valor_total += subtotal
 
@@ -225,6 +237,16 @@ def atualizar_status_pedido(
 
             if estoque:
                 estoque.quantidade += item.quantidade
+
+                movimento_devolucao = MovimentoEstoque(
+                    produto_id=item.produto_id,
+                    unidade_id=pedido.unidade_id,
+                    tipo=TipoMovimentoEstoque.DEVOLUCAO,
+                    quantidade=item.quantidade,
+                    motivo=f"Devolução automática pelo cancelamento do pedido {pedido.id}"
+                )
+
+                db.add(movimento_devolucao)
 
     if dados.status == StatusPedido.ENTREGUE:
 
