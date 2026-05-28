@@ -7,6 +7,7 @@ from app.models.pagamento import Pagamento, StatusPagamento
 from app.models.pedido import Pedido, StatusPedido
 from app.models.usuario import Usuario
 from app.schemas.pagamento_schema import PagamentoCreate, PagamentoResponse
+from app.utils.auditoria import registrar_log
 
 router = APIRouter(
     prefix="/pagamentos",
@@ -46,5 +47,14 @@ def criar_pagamento(
     db.add(novo_pagamento)
     db.commit()
     db.refresh(novo_pagamento)
+
+    registrar_log(
+        db=db,
+        usuario_id=usuario_logado.id,
+        acao="CRIAR_PAGAMENTO",
+        entidade="Pagamento",
+        entidade_id=novo_pagamento.id,
+        detalhes=f"Pagamento {novo_pagamento.status.value} via {novo_pagamento.metodo.value}"
+    )
 
     return novo_pagamento

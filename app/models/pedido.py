@@ -7,7 +7,7 @@ from sqlalchemy import Column, Integer, Float, Enum, ForeignKey
 from app.db.database import Base
 
 
-class CanalPedido(enum.Enum):
+class CanalPedido(str, enum.Enum):
     APP = "APP"
     TOTEM = "TOTEM"
     BALCAO = "BALCAO"
@@ -15,7 +15,7 @@ class CanalPedido(enum.Enum):
     WEB = "WEB"
 
 
-class StatusPedido(enum.Enum):
+class StatusPedido(str, enum.Enum):
     CRIADO = "CRIADO"
     EM_PREPARO = "EM_PREPARO"
     PRONTO = "PRONTO"

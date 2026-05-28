@@ -9,7 +9,7 @@ from app.models.pedido import Pedido, StatusPedido, CanalPedido
 from app.models.produto import Produto
 from app.models.usuario import Usuario, TipoUsuario
 from app.schemas.pedido_schema import PedidoCreate, PedidoResponse, AtualizarStatusPedido
-
+from app.utils.auditoria import registrar_log
 
 router = APIRouter(
     prefix="/pedidos",
@@ -90,6 +90,15 @@ def criar_pedido(
 
     db.commit()
     db.refresh(novo_pedido)
+
+    registrar_log(
+        db=db,
+        usuario_id=usuario_logado.id,
+        acao="CRIAR_PEDIDO",
+        entidade="Pedido",
+        entidade_id=novo_pedido.id,
+        detalhes=f"Pedido criado via canal {pedido.canal_pedido.value}"
+    )
 
     return novo_pedido
 
@@ -229,6 +238,15 @@ def atualizar_status_pedido(
             usuario.pontos_fidelidade += pontos
 
     pedido.status = dados.status
+
+    registrar_log(
+        db=db,
+        usuario_id=usuario_logado.id,
+        acao="ALTERAR_STATUS_PEDIDO",
+        entidade="Pedido",
+        entidade_id=pedido.id,
+        detalhes=f"Status alterado para {dados.status.value}"
+    )
 
     db.commit()
     db.refresh(pedido)

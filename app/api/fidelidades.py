@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 from app.core.auth_dependencies import get_usuario_logado
+from app.db.dependencies import get_db
 from app.models.usuario import Usuario
 from app.schemas.fidelidade_schema import (
     ResgatePontosRequest,
     SaldoFidelidadeResponse,
     ResgatePontosResponse
 )
+from app.utils.auditoria import registrar_log
+
 
 router = APIRouter(
     prefix="/fidelidades",
@@ -28,6 +32,7 @@ def consultar_saldo(
 @router.post("/resgatar", response_model=ResgatePontosResponse)
 def resgatar_pontos(
     dados: ResgatePontosRequest,
+    db: Session = Depends(get_db),
     usuario_logado: Usuario = Depends(get_usuario_logado)
 ):
     if not usuario_logado.consentimento_lgpd:
@@ -67,6 +72,18 @@ def resgatar_pontos(
         )
 
     usuario_logado.pontos_fidelidade -= dados.pontos
+
+    db.commit()
+    db.refresh(usuario_logado)
+
+    registrar_log(
+        db=db,
+        usuario_id=usuario_logado.id,
+        acao="RESGATAR_PONTOS",
+        entidade="Usuario",
+        entidade_id=usuario_logado.id,
+        detalhes=f"Resgate de {dados.pontos} pontos"
+    )
 
     return {
         "usuario_id": usuario_logado.id,
