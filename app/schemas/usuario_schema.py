@@ -17,6 +17,7 @@ class UsuarioResponse(BaseModel):
     email: EmailStr
     tipo: TipoUsuario
     ativo: bool
+    pontos_fidelidade: int
     consentimento_lgpd: bool
 
     class Config:

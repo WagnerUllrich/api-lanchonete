@@ -26,4 +26,6 @@ class Usuario(Base):
 
     ativo = Column(Boolean, default=True)
 
+    pontos_fidelidade = Column(Integer, default=0)
+
     consentimento_lgpd = Column(Boolean, default=False)

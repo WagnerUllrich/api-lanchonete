@@ -210,6 +210,17 @@ def atualizar_status_pedido(
             if estoque:
                 estoque.quantidade += item.quantidade
 
+    if dados.status == StatusPedido.ENTREGUE:
+
+        usuario = db.query(Usuario).filter(
+            Usuario.id == pedido.usuario_id
+        ).first()
+
+        if usuario and usuario.consentimento_lgpd:
+            pontos = int(pedido.valor_total)
+
+            usuario.pontos_fidelidade += pontos
+
     pedido.status = dados.status
 
     db.commit()
