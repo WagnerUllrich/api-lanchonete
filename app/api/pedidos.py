@@ -5,7 +5,7 @@ from app.core.auth_dependencies import get_usuario_logado, exigir_tipos_usuario
 from app.db.dependencies import get_db
 from app.models.estoque import Estoque
 from app.models.item_pedido import ItemPedido
-from app.models.pedido import Pedido, StatusPedido
+from app.models.pedido import Pedido, StatusPedido, CanalPedido
 from app.models.produto import Produto
 from app.models.usuario import Usuario, TipoUsuario
 from app.schemas.pedido_schema import PedidoCreate, PedidoResponse, AtualizarStatusPedido
@@ -95,15 +95,23 @@ def criar_pedido(
 
 @router.get("/", response_model=list[PedidoResponse])
 def listar_pedidos(
+    canal_pedido: CanalPedido | None = None,
     db: Session = Depends(get_db),
     usuario_logado: Usuario = Depends(get_usuario_logado)
 ):
-    if usuario_logado.tipo == TipoUsuario.CLIENTE:
-        return db.query(Pedido).filter(
-            Pedido.usuario_id == usuario_logado.id
-        ).all()
+    query = db.query(Pedido)
 
-    return db.query(Pedido).all()
+    if usuario_logado.tipo == TipoUsuario.CLIENTE:
+        query = query.filter(
+            Pedido.usuario_id == usuario_logado.id
+        )
+
+    if canal_pedido:
+        query = query.filter(
+            Pedido.canal_pedido == canal_pedido
+        )
+
+    return query.all()
 
 
 @router.get("/{pedido_id}", response_model=PedidoResponse)
