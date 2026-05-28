@@ -18,6 +18,8 @@ from app.api.estoques import router as estoques_router
 from app.api.pedidos import router as pedidos_router
 from app.api.pagamentos import router as pagamentos_router
 from app.api.fidelidades import router as fidelidades_router
+from app.models.movimento_estoque import MovimentoEstoque
+from app.api.movimentos_estoques import router as movimentos_estoques_router
 
 
 
@@ -38,7 +40,7 @@ app.include_router(pedidos_router)
 app.include_router(pagamentos_router)
 app.include_router(fidelidades_router)
 app.include_router(logs_auditorias_router)
-
+app.include_router(movimentos_estoques_router)
 
 
 @app.get("/")
