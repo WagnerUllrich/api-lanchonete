@@ -188,6 +188,20 @@ def atualizar_status_pedido(
             }
         )
 
+    if dados.status == StatusPedido.CANCELADO:
+        itens = db.query(ItemPedido).filter(
+            ItemPedido.pedido_id == pedido.id
+        ).all()
+
+        for item in itens:
+            estoque = db.query(Estoque).filter(
+                Estoque.produto_id == item.produto_id,
+                Estoque.unidade_id == pedido.unidade_id
+            ).first()
+
+            if estoque:
+                estoque.quantidade += item.quantidade
+
     pedido.status = dados.status
 
     db.commit()

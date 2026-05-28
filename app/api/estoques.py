@@ -35,7 +35,12 @@ def criar_estoque(
 @router.get("/", response_model=list[EstoqueResponse])
 def listar_estoques(
     db: Session = Depends(get_db),
-    usuario_logado: Usuario = Depends(get_usuario_logado)
+    usuario_logado: Usuario = Depends(
+        exigir_tipos_usuario([
+            TipoUsuario.ADMIN,
+            TipoUsuario.FUNCIONARIO
+        ])
+    )
 ):
     return db.query(Estoque).all()
 
@@ -44,6 +49,11 @@ def listar_estoques(
 def listar_estoque_por_unidade(
     unidade_id: int,
     db: Session = Depends(get_db),
-    usuario_logado: Usuario = Depends(get_usuario_logado)
+    usuario_logado: Usuario = Depends(
+        exigir_tipos_usuario([
+            TipoUsuario.ADMIN,
+            TipoUsuario.FUNCIONARIO
+        ])
+    )
 ):
     return db.query(Estoque).filter(Estoque.unidade_id == unidade_id).all()
