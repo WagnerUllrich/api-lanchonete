@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 
 from app.db.dependencies import get_db
 from app.models.unidade import Unidade
+from app.models.estoque import Estoque
+from app.models.produto import Produto
 from app.models.usuario import Usuario, TipoUsuario
-from app.schemas.unidade_schema import UnidadeCreate, UnidadeResponse, UnidadeUpdate
+from app.schemas.unidade_schema import UnidadeCreate, UnidadeResponse, UnidadeUpdate, CardapioProdutoResponse
 from app.core.auth_dependencies import get_usuario_logado, exigir_tipos_usuario
 
 router = APIRouter(
@@ -91,3 +93,35 @@ def atualizar_unidade(
     db.refresh(unidade)
 
     return unidade
+
+@router.get("/{unidade_id}/cardapio", response_model=list[CardapioProdutoResponse])
+def obter_cardapio_unidade(
+    unidade_id: int,
+    db: Session = Depends(get_db),
+    usuario_logado: Usuario = Depends(get_usuario_logado)
+):
+    estoques = db.query(Estoque).filter(
+        Estoque.unidade_id == unidade_id
+    ).all()
+
+    cardapio = []
+
+    for estoque in estoques:
+
+        produto = db.query(Produto).filter(
+            Produto.id == estoque.produto_id,
+            Produto.ativo == True
+        ).first()
+
+        if produto is None:
+            continue
+
+        cardapio.append({
+            "produto_id": produto.id,
+            "nome": produto.nome,
+            "descricao": produto.descricao,
+            "preco": produto.preco,
+            "disponivel": estoque.quantidade > 0
+        })
+
+    return cardapio

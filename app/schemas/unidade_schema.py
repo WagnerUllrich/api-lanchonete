@@ -20,3 +20,11 @@ class UnidadeUpdate(BaseModel):
     nome: str
     endereco: str
     ativo: bool
+
+
+class CardapioProdutoResponse(BaseModel):
+    produto_id: int
+    nome: str
+    descricao: str | None
+    preco: float
+    disponivel: bool
