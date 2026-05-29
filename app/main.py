@@ -43,6 +43,3 @@ app.include_router(logs_auditorias_router)
 app.include_router(movimentos_estoques_router)
 
 
-@app.get("/")
-def home():
-    return {"message": "API Padaria funcionando"}
