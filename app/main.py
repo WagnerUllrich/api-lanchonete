@@ -26,8 +26,8 @@ from app.api.movimentos_estoques import router as movimentos_estoques_router
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="API Padaria",
-    description="API backend para rede de padarias",
+    title="Raízes do Nordeste — API Back-end",
+    description="API backend para rede de lanchonetes com múltiplas unidades e canais de atendimento",
     version="1.0.0"
 )
 
