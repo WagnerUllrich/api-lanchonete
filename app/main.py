@@ -20,6 +20,9 @@ from app.api.pagamentos import router as pagamentos_router
 from app.api.fidelidades import router as fidelidades_router
 from app.models.movimento_estoque import MovimentoEstoque
 from app.api.movimentos_estoques import router as movimentos_estoques_router
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi import status
 
 
 
@@ -30,6 +33,38 @@ app = FastAPI(
     description="API backend para rede de lanchonetes com múltiplas unidades e canais de atendimento",
     version="1.0.0"
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    for erro in exc.errors():
+        loc = erro.get("loc", [])
+
+        if "canalPedido" in loc:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "erro": True,
+                        "codigo": "CANAL_PEDIDO_INVALIDO",
+                        "mensagem": "O campo canalPedido é obrigatório e deve ser APP, TOTEM, BALCAO, PICKUP ou WEB.",
+                        "detalhes": None
+                    }
+                }
+            )
+
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": {
+                "erro": True,
+                "codigo": "ERRO_VALIDACAO",
+                "mensagem": "Erro de validação nos dados enviados.",
+                "detalhes": exc.errors()
+            }
+        }
+    )
+
 
 app.include_router(usuarios_router)
 app.include_router(auth_router)
