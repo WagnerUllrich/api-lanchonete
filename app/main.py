@@ -23,10 +23,37 @@ from app.api.movimentos_estoques import router as movimentos_estoques_router
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi import status
+from app.db.database import SessionLocal
+from app.core.security import gerar_hash_senha
 
 
 
 Base.metadata.create_all(bind=engine)
+
+def criar_admin_padrao():
+    db = SessionLocal()
+
+    admin_existente = db.query(Usuario).filter(
+        Usuario.email == "admin@gmail.com"
+    ).first()
+
+    if not admin_existente:
+        admin = Usuario(
+            nome="Administrador",
+            email="admin@gmail.com",
+            senha_hash=gerar_hash_senha("123456"),
+            tipo="ADMIN",
+            consentimento_lgpd=True,
+            ativo=True
+        )
+
+        db.add(admin)
+        db.commit()
+
+    db.close()
+
+
+criar_admin_padrao()
 
 app = FastAPI(
     title="Raízes do Nordeste — API Back-end",
