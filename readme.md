@@ -123,7 +123,7 @@ Cole o valor na variável token do ambiente do Postman
 Execute os demais testes da coleção
 DER
 
-O Diagrama Entidade-Relacionamento (DER) está disponível na pasta de documentação do projeto.
+O Diagrama Entidade-Relacionamento (DER) está disponível na pasta `docs` do projeto, juntamente com os demais diagramas.
 
 Segurança e LGPD
 
