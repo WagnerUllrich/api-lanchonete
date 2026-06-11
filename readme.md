@@ -77,14 +77,16 @@ OpenAPI:
 
 http://127.0.0.1:8000/openapi.json
 Estrutura do Projeto
-app/
-├── api
-├── core
-├── db
-├── models
-├── schemas
-├── utils
-└── main.py
+
+- api: contém os endpoints e rotas da API REST.
+- core: contém os compongentes de segurança, autenticação JWT e controle de acesso.
+- db: contém a configuração e conexão com o banco de dados.
+- models: contém as entidades e tabelas do sistema.
+- schemas: contém os contratos de entrada e saída da API, além das validações.
+- utils: contém funções auxiliares e recursos de auditoria.
+- main.py: responsável pela inicialização da aplicação, criação das tabelas e registro das rotas.
+
+A pasta docs contém os diagramas e documentos do projeto, incluindo o DER e demais artefatos de modelagem.
 
 A aplicação foi organizada em camadas para separar responsabilidades entre regras de negócio, persistência, autenticação e endpoints.
 
