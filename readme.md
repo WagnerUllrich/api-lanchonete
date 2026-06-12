@@ -16,28 +16,40 @@ Swagger/OpenAPI
 
 Como Executar o Projeto
 1. Clonar o repositório
+
 git clone https://github.com/WagnerUllrich/api-lanchonete.git
+
 cd api-lanchonete
+
 2. Criar ambiente virtual
+
 python -m venv .venv
+
 3. Ativar ambiente virtual
+
 .venv\Scripts\activate
+
 4. Instalar dependências
+
 pip install -r requirements.txt
+
 5. Configurar variáveis de ambiente
 
 Criar um arquivo .env com base no .env.example.
 
 Exemplo:
 
-DATABASE_URL=sqlite:///./lanchonete.db
-JWT_SECRET_KEY=sua_chave_secreta
-JWT_ALGORITHM=HS256
-JWT_EXPIRE_MINUTES=60
+- DATABASE_URL=sqlite:///./lanchonete.db
+- JWT_SECRET_KEY=sua_chave_secreta
+- JWT_ALGORITHM=HS256
+- JWT_EXPIRE_MINUTES=60
+
 6. Iniciar a aplicação
+
 uvicorn app.main:app --reload
 
 A API ficará disponível em: http://127.0.0.1:8000
+
 A documentação Swagger pode ser acessada em: http://127.0.0.1:8000/docs
 
 Banco de Dados
@@ -58,6 +70,7 @@ Senha: 123456
 Perfil:
 
 ADMIN
+
 Documentação da API
 
 Swagger:
@@ -80,33 +93,34 @@ A pasta docs contém os diagramas e documentos do projeto, incluindo o DER e dem
 
 A aplicação foi organizada em camadas para separar responsabilidades entre regras de negócio, persistência, autenticação e endpoints.
 
-Principais Funcionalidades
-Cadastro de usuários
-Login com JWT
-Controle de acesso por perfil
-Gerenciamento de unidades
-Gerenciamento de produtos
-Controle de estoque por unidade
-Criação e consulta de pedidos
-Pagamento mock
-Programa de fidelidade
-Logs de auditoria
-Suporte a múltiplos canais de venda (APP, TOTEM, BALCAO, PICKUP e WEB)
-Fluxo Principal Implementado
-Usuário realiza login
-Produto e estoque são cadastrados
-Cliente cria um pedido
-O pagamento mock é processado
-O pedido muda para EM_PREPARO
-O status é atualizado para PRONTO
-O pedido é marcado como ENTREGUE
-Os pontos de fidelidade são creditados automaticamente
+- Principais Funcionalidades
+- Cadastro de usuários
+- Login com JWT
+- Controle de acesso por perfil
+- Gerenciamento de unidades
+- Gerenciamento de produtos
+- Controle de estoque por unidade
+- Criação e consulta de pedidos
+- Pagamento mock
+- Programa de fidelidade
+- Logs de auditoria
+- Suporte a múltiplos canais de venda (APP, TOTEM, BALCAO, PICKUP e WEB)
+- Fluxo Principal Implementado
+- Usuário realiza login
+- Produto e estoque são cadastrados
+- Cliente cria um pedido
+- O pagamento mock é processado
+- O pedido muda para EM_PREPARO
+- O status é atualizado para PRONTO
+- O pedido é marcado como ENTREGUE
+- Os pontos de fidelidade são creditados automaticamente
 
 Coleção Postman
 
 A coleção utilizada nos testes está disponível no repositório:
 
 API Raízes do Nordeste.postman_collection.json
+
 Para executar os testes:
 
 1. Importe a coleção no Postman.
@@ -119,17 +133,19 @@ Para executar os testes:
 DER O Diagrama Entidade-Relacionamento (DER) está disponível na pasta docs do projeto, juntamente com os demais diagramas.
 
 Segurança e LGPD
+
 O projeto implementa:
 
-Senhas armazenadas com hash
-Autenticação JWT
-Controle de acesso por perfis
-Consentimento LGPD para fidelidade
-Auditoria de ações sensíveis
-Padronização de erros da API
-Senhas nunca retornadas nas respostas
+- Senhas armazenadas com hash
+- Autenticação JWT
+- Controle de acesso por perfis
+- Consentimento LGPD para fidelidade
+- Auditoria de ações sensíveis
+- Padronização de erros da API
+- Senhas nunca retornadas nas respostas
 
-Autor
+Autor:
+
 Wagner Ullrich RU: 4819534
 
 Projeto Multidisciplinar – Trilha Back-End – UNINTER
