@@ -5,16 +5,17 @@ API REST desenvolvida para a disciplina Projeto Multidisciplinar – Trilha Back
 O projeto simula o sistema de uma rede de lanchonetes com múltiplas unidades e canais de atendimento, permitindo cadastro de usuários, gerenciamento de produtos, controle de estoque, pedidos, pagamentos simulados, fidelidade e auditoria.
 
 Tecnologias Utilizadas
-Python 3.10+
-FastAPI
-SQLAlchemy
-SQLite
-Pydantic
-JWT
-Uvicorn
-Swagger/OpenAPI
+- Python 3.10+
+- FastAPI
+- SQLAlchemy
+- SQLite
+- Pydantic
+- JWT
+- Uvicorn
+- Swagger/OpenAPI
 
 Como Executar o Projeto
+
 1. Clonar o repositório
 
 git clone https://github.com/WagnerUllrich/api-lanchonete.git
