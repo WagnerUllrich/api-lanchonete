@@ -13,6 +13,7 @@ Pydantic
 JWT
 Uvicorn
 Swagger/OpenAPI
+
 Como Executar o Projeto
 1. Clonar o repositório
 git clone https://github.com/WagnerUllrich/api-lanchonete.git
@@ -20,9 +21,6 @@ cd api-lanchonete
 2. Criar ambiente virtual
 python -m venv .venv
 3. Ativar ambiente virtual
-
-Windows:
-
 .venv\Scripts\activate
 4. Instalar dependências
 pip install -r requirements.txt
@@ -39,30 +37,23 @@ JWT_EXPIRE_MINUTES=60
 6. Iniciar a aplicação
 uvicorn app.main:app --reload
 
-A API ficará disponível em:
+A API ficará disponível em: http://127.0.0.1:8000
+A documentação Swagger pode ser acessada em: http://127.0.0.1:8000/docs
 
-http://127.0.0.1:8000
 Banco de Dados
 
 O projeto utiliza SQLite.
 
 O banco é criado automaticamente na primeira execução da aplicação.
 
-Arquivo gerado:
-
-lanchonete.db
+Arquivo gerado: lanchonete.db
 
 Também existe uma seed automática que cria um usuário administrador padrão caso ele ainda não exista.
 
 Usuário padrão para testes
 
-E-mail:
-
-admin@gmail.com
-
-Senha:
-
-123456
+E-mail: admin@gmail.com
+Senha: 123456
 
 Perfil:
 
@@ -70,12 +61,11 @@ ADMIN
 Documentação da API
 
 Swagger:
-
 http://127.0.0.1:8000/docs
 
 OpenAPI:
-
 http://127.0.0.1:8000/openapi.json
+
 Estrutura do Projeto
 
 - api: contém os endpoints e rotas da API REST.
@@ -111,24 +101,24 @@ O pedido muda para EM_PREPARO
 O status é atualizado para PRONTO
 O pedido é marcado como ENTREGUE
 Os pontos de fidelidade são creditados automaticamente
+
 Coleção Postman
 
 A coleção utilizada nos testes está disponível no repositório:
 
 API Raízes do Nordeste.postman_collection.json
-
 Para executar os testes:
 
-Execute o teste T01 - Login válido
-Copie o access_token retornado
-Cole o valor na variável token do ambiente do Postman
-Execute os demais testes da coleção
-DER
+1. Importe a coleção no Postman.
+2. Execute a requisição T01 – Login válido.
+3. Copie o valor retornado em access_token.
+4. Crie um novo Environment no Postman e adicione uma variável chamada token.
+5. Cole o access_token nessa variável e salve.
+6. Execute as demais requisições da coleção.
 
-O Diagrama Entidade-Relacionamento (DER) está disponível na pasta `docs` do projeto, juntamente com os demais diagramas.
+DER O Diagrama Entidade-Relacionamento (DER) está disponível na pasta docs do projeto, juntamente com os demais diagramas.
 
 Segurança e LGPD
-
 O projeto implementa:
 
 Senhas armazenadas com hash
@@ -138,8 +128,8 @@ Consentimento LGPD para fidelidade
 Auditoria de ações sensíveis
 Padronização de erros da API
 Senhas nunca retornadas nas respostas
-Autor
 
+Autor
 Wagner Ullrich RU: 4819534
 
 Projeto Multidisciplinar – Trilha Back-End – UNINTER
